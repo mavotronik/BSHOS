@@ -1,2 +1,7 @@
 # BSHOS
-Baltic Sloboda Home OS - System for control heat
+Baltic Sloboda Home OS - Система для контроля отопления в загородном доме по СМС
+## Версии:
+- :o: Состояние стабильности: не стабильно
+- :white_circle: Состояние стабильности: не известно
+- :heavy_check_mark: Состояние стабильности: стабильно
+:white_circle: Rozetki 2.0 - Первая версия без контроля температуры 
