@@ -84,7 +84,7 @@ void setup()
   // выводим сообщение об удачной инициализации GPRS Shield
   Serial.println("GPRS init success");
 
-  gprs.sendSMS("+79213310104", "SYSTEM POWER IS ON!");
+  gprs.sendSMS(" +7xxxxxxxxxx", "SYSTEM POWER IS ON!");
 }
  
 void loop()
