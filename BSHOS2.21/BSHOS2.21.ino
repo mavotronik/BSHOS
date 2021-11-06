@@ -95,9 +95,9 @@ void setup()
   // выводим сообщение об удачной инициализации GPRS Shield
   Serial.println("GPRS init success");
 
-  gprs.sendSMS("+79213310104", "SYSTEM: POWER IS ON!");
+  gprs.sendSMS("+7xxxxxxxxxx", "SYSTEM: POWER IS ON!");
   delay(3000);
-  gprs.sendSMS("+79062585121", "SYSTEM: POWER IS ON!");
+  gprs.sendSMS("+7xxxxxxxxxx", "SYSTEM: POWER IS ON!");
   delay(1000);
   aauto(); //Автовосстановление состояния при перезагрузке
 }
@@ -123,9 +123,9 @@ void setup()
 if (stat == 1){
   On();
   stateRelay = true;
-  gprs.sendSMS("+79213310104", "SYSTEM: AUTO RESTART!");
+  gprs.sendSMS("+7xxxxxxxxxx", "SYSTEM: AUTO RESTART!");
   delay(3000);
-  gprs.sendSMS("+79062585121", "SYSTEM: AUTO RESTART!");
+  gprs.sendSMS("+7xxxxxxxxxx", "SYSTEM: AUTO RESTART!");
 }
  }
 void temp_get(){
