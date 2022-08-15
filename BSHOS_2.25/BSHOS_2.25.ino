@@ -40,9 +40,9 @@ char Tempr2;
 
 void setup()
 {
-  pinMode(REL1, OUTPUT);         //назначаем 5 цифр. пин как выход
-  pinMode(REL2, OUTPUT);        //назначаем 8 цифр. пин как выход
-  pinMode(REL3, OUTPUT);       //назначаем 9 цифр. пин как выход
+  pinMode(REL1, OUTPUT);     //назначаем 5 цифр. пин как выход
+  pinMode(REL2, OUTPUT);    //назначаем 8 цифр. пин как выход
+  pinMode(REL3, OUTPUT);   //назначаем 9 цифр. пин как выход
 
   Off(); //Вырубить релюхи
 
@@ -77,9 +77,9 @@ void setup()
   // выводим сообщение об удачной инициализации GPRS Shield
   Serial.println("GPRS init success");
 
-  gprs.sendSMS("+7xxxxxx", "SYSTEM: POWER IS ON!");
+  gprs.sendSMS("+7xxx4", "SYSTEM: POWER IS ON!");
   delay(3000);
-  gprs.sendSMS("+7xxxxxx", "SYSTEM: POWER IS ON!");
+  gprs.sendSMS("+7xxx1", "SYSTEM: POWER IS ON!");
   delay(1000);
   aauto(); //Автовосстановление состояния при перезагрузке
 }
@@ -103,13 +103,23 @@ void aauto() {
   temp_mode = eeprom_read_byte(3);
   if (mode == 0) {
     Off();
+    gprs.sendSMS("+7xxx4", "SYSTEM: AUTO RESTART! Current mode is always Off");
+    delay(3000);
+    gprs.sendSMS("+7xxx1", "SYSTEM: AUTO RESTART! Current mode is always Off");
   }
 
   if (mode == 1) {
     On();
-    gprs.sendSMS("+7xxxxxx", "SYSTEM: AUTO RESTART! Current mode is always On");
+    gprs.sendSMS("+7xxx4", "SYSTEM: AUTO RESTART! Current mode is always On");
     delay(3000);
-    gprs.sendSMS("+7xxxxxx", "SYSTEM: AUTO RESTART! Current mode is always On");
+    gprs.sendSMS("+7xxx1", "SYSTEM: AUTO RESTART! Current mode is always On");
+  }
+
+  if (mode == 3) {
+    //On();
+    gprs.sendSMS("+79213310104", "SYSTEM: AUTO RESTART! Current mode is temperature maintenance");
+    delay(3000);
+    gprs.sendSMS("+79062585121", "SYSTEM: AUTO RESTART! Current mode is temperature maintenance");
   }
 }
 
@@ -121,6 +131,9 @@ void temp_get() {
     voltage = voltage / 1024.0;
     delay(10); //задержка
     temp = (voltage - 0.5) * 100; // конвертация напряжения в температуру
+    Serial.print("Temperature: ");
+    Serial.println(temp);
+    Serial.print("\r\n");
     delay(10); // задержка
   }
 
@@ -128,11 +141,33 @@ void temp_keeper() {
   if (mode == 3)
     if (temp_mode == 1){
       temp_get();
-        if (temp <= 10)
+        if (temp < 10)
           On();
         else 
-          Off();
+          Off();}
+    
+    if (temp_mode == 2){
+      temp_get();
+        if (temp < 15)
+          On();
+        else 
+          Off();} 
+
+    if (temp_mode == 3){
+      temp_get();
+        if (temp < 20)
+          On();
+        else 
+          Off(); }
+  
+if (temp_mode == 4){
+      temp_get();
+        if (temp < 25)
+          On();
+        else 
+          Off(); 
   }
+  delay(500);
 }
 
 void loop()
@@ -162,7 +197,7 @@ void loop()
     setRelay(phone, message);
   }
 
-  
+  temp_keeper();
 }
 
 void setRelay(char f_phone[], char f_message[])
@@ -203,15 +238,15 @@ void setRelay(char f_phone[], char f_message[])
 
     }
 
-} else if (strcmp(f_message, KEEP_TEMP10) == 0) {
+} else if (strcmp(f_message, KEEP_TEMP10) == 0) { //если пришло сообщеие с текстом «keep10», выводим сообщение в Serial, ставим переменую mode в 3, переменную temp_mode в 1
      mode = 3;
      temp_mode = 1;
      eeprom_write_byte(0, mode);
      eeprom_write_byte(3, temp_mode);
      Serial.println("Mode keep 10 deg");
-     gprs.sendSMS(f_phone, "Mode set to keep 10 deg");
+     gprs.sendSMS(f_phone, "Mode set to keep 10 deg"); //отчет на номер с которого был сделан заппрос
 
-} else if (strcmp(f_message, KEEP_TEMP15) == 0) {
+} else if (strcmp(f_message, KEEP_TEMP15) == 0) { 
      mode = 3;
      temp_mode = 2;
      eeprom_write_byte(0, mode);
